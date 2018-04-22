@@ -2,9 +2,9 @@
   "plugin_id": "melcloud",
   "name_fr": "Climatisations Mistubishi",
   "icon": "melcloud.png",
-  "version": "1.02",
+  "version": "1.1",
   "creation_date": "2018-04-14",
-  "modification_date": "2018-04-19",
+  "modification_date": "2018-04-22",
   "author": "oheguy",
   "description_fr": "Pilotez votre climatisation connectée Mitsubishi depuis votre eedomus",
   "description_en": "Control your Mitsubishi air-conditioning from your eedomus",
@@ -20,11 +20,18 @@
       "field": "width:200, allowBlank:false"
     },
     {
-      "parameter": "ids",
-      "description": "idbuilding:iddevice",
+      "parameter": "deviceName",
+      "description": "Device name",
       "xtype": "textfield",
-      "default_value": "12345:67890",
+      "default_value": "Salon",
       "field": "width:200, allowBlank:false"
+    },
+    {
+      "parameter": "session",
+      "description": "empty|off|contextOnly|deviceNameOnly|azerty",
+      "xtype": "textfield",
+      "default_value": "",
+      "field": "width:200, allowBlank:true"
     }
   ],
   "scripts": [
@@ -44,8 +51,9 @@
         "value_type": "list",
         "ignore_errors": 3,
         "VAR1": "plugin.parameters.userpass",
-        "VAR2": "plugin.parameters.ids",
-        "RAW_URL": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+        "VAR2": "plugin.parameters.deviceName",
+        "VAR3": "plugin.parameters.session",
+        "RAW_URL": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
         "RAW_XPATH": "/root/Power",
         "POLLING": "5"
       },
@@ -54,7 +62,7 @@
           "value": "0",
           "description": "Arrêt",
           "icon": "climoff.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&power=false"
         },
@@ -62,7 +70,7 @@
           "value": "1",
           "description": "Marche",
           "icon": "climon.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&power=true"
         }
@@ -76,24 +84,65 @@
       "name_fr": "plugin.name - Vitesse Ventilateur",
       "icon": "ventilateur.png",
       "utilisation_id": "4",
-      "parameters":
-      {
+      "parameters": {
         "value_type": "list",
         "ignore_errors": 3,
         "VAR1": "plugin.parameters.userpass",
-        "VAR2": "plugin.parameters.ids",
-        "RAW_URL": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+        "VAR2": "plugin.parameters.deviceName",
+        "VAR3": "plugin.parameters.session",
+        "RAW_URL": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
         "RAW_XPATH": "/root/SetFanSpeed",
         "POLLING": "5"
       },
-      "values":
-      [
-        { "value": "0", "description": "Automatique", "icon": "clim_vent_auto.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=0" },
-        { "value": "1", "description": "Vitesse 1", "icon": "clim_vent_1.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=1" },
-        { "value": "2", "description": "Vitesse 2", "icon": "clim_vent_2.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=2" },
-        { "value": "3", "description": "Vitesse 3", "icon": "clim_vent_3.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=3" },
-        { "value": "4", "description": "Vitesse 4", "icon": "clim_vent_4.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=4" },
-        { "value": "5", "description": "Vitesse 5", "icon": "clim_vent_5.png", "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]", "http_type": "GET",  "http_params": "&fanspeed=5" }
+      "values": [
+        {
+          "value": "0",
+          "description": "Automatique",
+          "icon": "clim_vent_auto.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=0"
+        },
+        {
+          "value": "1",
+          "description": "Vitesse 1",
+          "icon": "clim_vent_1.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=1"
+        },
+        {
+          "value": "2",
+          "description": "Vitesse 2",
+          "icon": "clim_vent_2.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=2"
+        },
+        {
+          "value": "3",
+          "description": "Vitesse 3",
+          "icon": "clim_vent_3.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=3"
+        },
+        {
+          "value": "4",
+          "description": "Vitesse 4",
+          "icon": "clim_vent_4.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=4"
+        },
+        {
+          "value": "5",
+          "description": "Vitesse 5",
+          "icon": "clim_vent_5.png",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
+          "http_type": "GET",
+          "http_params": "&fanspeed=5"
+        }
       ]
     },
     {
@@ -108,8 +157,9 @@
         "value_type": "list",
         "ignore_errors": 3,
         "VAR1": "plugin.parameters.userpass",
-        "VAR2": "plugin.parameters.ids",
-        "RAW_URL": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+        "VAR2": "plugin.parameters.deviceName",
+        "VAR3": "plugin.parameters.session",
+        "RAW_URL": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
         "RAW_XPATH": "/root/OperationMode",
         "POLLING": "5"
       },
@@ -118,7 +168,7 @@
           "value": "8",
           "description": "Automatique",
           "icon": "climauto.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&mode=8"
         },
@@ -126,7 +176,7 @@
           "value": "2",
           "description": "Déshumidification",
           "icon": "climdes.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&mode=2"
         },
@@ -134,7 +184,7 @@
           "value": "3",
           "description": "Rafraichissement",
           "icon": "climfr.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&mode=3"
         },
@@ -142,7 +192,7 @@
           "value": "1",
           "description": "Chauffage",
           "icon": "climchauff.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&mode=1"
         },
@@ -150,7 +200,7 @@
           "value": "7",
           "description": "Ventilation",
           "icon": "climvent.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&mode=7"
         }
@@ -168,8 +218,9 @@
         "value_type": "list",
         "ignore_errors": 3,
         "VAR1": "plugin.parameters.userpass",
-        "VAR2": "plugin.parameters.ids",
-        "RAW_URL": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+        "VAR2": "plugin.parameters.deviceName",
+        "VAR3": "plugin.parameters.session",
+        "RAW_URL": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
         "RAW_XPATH": "/root/SetTemperature",
         "POLLING": "5"
       },
@@ -178,7 +229,7 @@
           "value": "17",
           "description": "17°C",
           "icon": "17degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=17"
         },
@@ -186,7 +237,7 @@
           "value": "18",
           "description": "18°C",
           "icon": "18degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=18"
         },
@@ -194,7 +245,7 @@
           "value": "19",
           "description": "19°C",
           "icon": "19degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=19"
         },
@@ -202,7 +253,7 @@
           "value": "20",
           "description": "20°C",
           "icon": "20degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=20"
         },
@@ -210,7 +261,7 @@
           "value": "21",
           "description": "21°C",
           "icon": "21degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=21"
         },
@@ -218,7 +269,7 @@
           "value": "22",
           "description": "22°C",
           "icon": "22degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=22"
         },
@@ -226,7 +277,7 @@
           "value": "23",
           "description": "23°C",
           "icon": "23degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=23"
         },
@@ -234,7 +285,7 @@
           "value": "24",
           "description": "24°C",
           "icon": "24degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=24"
         },
@@ -242,7 +293,7 @@
           "value": "25",
           "description": "25°C",
           "icon": "25degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=25"
         },
@@ -250,7 +301,7 @@
           "value": "26",
           "description": "26°C",
           "icon": "26degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=26"
         },
@@ -258,7 +309,7 @@
           "value": "27",
           "description": "27°C",
           "icon": "27degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=27"
         },
@@ -266,7 +317,7 @@
           "value": "28",
           "description": "28°C",
           "icon": "28degres.png",
-          "http_url": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+          "http_url": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
           "http_type": "GET",
           "http_params": "&temperature=28"
         }
@@ -285,8 +336,9 @@
         "value_type": "float",
         "ignore_errors": 3,
         "VAR1": "plugin.parameters.userpass",
-        "VAR2": "plugin.parameters.ids",
-        "RAW_URL": "http://localhost/script/?exec=melcloud.php&ids=[VAR2]&userpass=[VAR1]",
+        "VAR2": "plugin.parameters.deviceName",
+        "VAR3": "plugin.parameters.session",
+        "RAW_URL": "http://localhost/script/?exec=melcloud.php&deviceName=[VAR2]&userpass=[VAR1]&session=[VAR3]",
         "RAW_XPATH": "/root/RoomTemperature",
         "POLLING": "5"
       }

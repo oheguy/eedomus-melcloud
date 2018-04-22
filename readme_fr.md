@@ -9,6 +9,9 @@ plugin permettant de gèrer une climatisation Mitsubishi via Melcloud
 1. le couple email:motDePasse - Exemple : *test@test.com:MonMotDePasse*
 2. 2 paramètres Melcloud qui sont l'id du batiment et l'id de la climatisation - Exemple : *12345:67890*
 
+1 paramètre optionnel :
+1. stockage des sessions (off|contextOnly|idsOny|all) - all par défaut
+
 Pour récupérer les deux paramètres, connectez vous avec Chrome à l'application [Melcloud](https://www.melcloud.com/). 
 Rendez vous sur la page de gestion des climatisation puis appuyez sur la touche F12 pour ouvrir le debugger. 
 Cliquez sur la climatisation et récupérez les deux identifiants
