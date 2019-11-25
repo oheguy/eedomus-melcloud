@@ -103,6 +103,20 @@ function sdk_get($moduleId, $deviceName, $username, $password){
 //get devicename
 $deviceName = getArg('deviceName');
 
+//use lock to avoid simultaneous calls
+$lockName = md5($deviceName).'-lock';
+$retry = 0;
+do {
+    if($retry) {
+        sleep(1);
+    }
+    $lock = loadVariable($lockName);
+    $retry++;
+}while($lock && $retry<10);
+
+if (empty($lock) || $lock-time() > 120) {
+    saveVariable($lockName, time());
+}
 
 //get User and password
 $userPass = getArg('userpass');
@@ -204,6 +218,7 @@ $aremplacer = '"HasPendingCommand":false';
 $json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
 
 $json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
+saveVariable($lockName, '');
 
 echo jsonToXML($json);
 
