@@ -103,6 +103,20 @@ function sdk_get($moduleId, $deviceName, $username, $password){
 //get devicename
 $deviceName = getArg('deviceName');
 
+//use lock to avoid simultaneous calls
+$lockName = md5($deviceName).'-lock';
+$retry = 0;
+do {
+    if($retry) {
+        sleep(1);
+    }
+    $lock = loadVariable($lockName);
+    $retry++;
+}while($lock && $retry<10);
+
+if (empty($lock) || $lock-time() > 120) {
+    saveVariable($lockName, time());
+}
 
 //get User and password
 $userPass = getArg('userpass');
@@ -160,6 +174,7 @@ $json = sdk_get($moduleId, $deviceName, $username, $password);
 
 
 $device = sdk_json_decode($json);
+$effectiveFlag = 0;
 
 $resultat = "";
 
@@ -168,53 +183,42 @@ if ($onoff != "") {
     $aremplacer = array('"Power":false', '"Power":true');
     $json = str_replace($aremplacer, '"Power":' . $onoff, $json);
 
-    $aremplacer = '"EffectiveFlags":' . $device['EffectiveFlags'];
-    $json = str_replace($aremplacer, '"EffectiveFlags":1', $json);
+    $effectiveFlag += 1;
 
-    $aremplacer = '"HasPendingCommand":false';
-    $json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
-
-    $json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
-
-} else if ($fanspeed != "") {
+}
+if ($fanspeed != "") {
 
     $aremplacer = '"SetFanSpeed":' . $device['SetFanSpeed'];
     $json = str_replace($aremplacer, '"SetFanSpeed":' . $fanspeed, $json);
 
-    $aremplacer = '"EffectiveFlags":' . $device['EffectiveFlags'];
-    $json = str_replace($aremplacer, '"EffectiveFlags":8', $json);
+    $effectiveFlag += 8;
 
-    $aremplacer = '"HasPendingCommand":false';
-    $json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
-
-    $json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
-
-} else if ($temperature != "") {
+}
+if ($temperature != "") {
 
     $aremplacer = '"SetTemperature":' . $device['SetTemperature'];
     $json = str_replace($aremplacer, '"SetTemperature":' . $temperature, $json);
 
-    $aremplacer = '"EffectiveFlags":' . $device['EffectiveFlags'];
-    $json = str_replace($aremplacer, '"EffectiveFlags":4', $json);
+    $effectiveFlag += 4;
 
-    $aremplacer = '"HasPendingCommand":false';
-    $json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
-
-    $json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
-} else if ($mode != "") {
+}
+if ($mode != "") {
 
     $aremplacer = '"OperationMode":' . $device['OperationMode'];
     $json = str_replace($aremplacer, '"OperationMode":' . $mode, $json);
 
-    $aremplacer = '"EffectiveFlags":' . $device['EffectiveFlags'];
-    $json = str_replace($aremplacer, '"EffectiveFlags":6', $json);
-
-    $aremplacer = '"HasPendingCommand":false';
-    $json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
-
-    $json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
+    $effectiveFlag += 2;
 
 }
+
+$aremplacer = '"EffectiveFlags":' . $device['EffectiveFlags'];
+$json = str_replace($aremplacer, '"EffectiveFlags":'.$effectiveFlag, $json);
+
+$aremplacer = '"HasPendingCommand":false';
+$json = str_replace($aremplacer, '"HasPendingCommand":true', $json);
+
+$json = httpQuery('https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/SetAta', 'POST', $json, '', sdk_getHeader(), false);
+saveVariable($lockName, '');
 
 echo jsonToXML($json);
 
